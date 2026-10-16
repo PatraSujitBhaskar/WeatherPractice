@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherpractice.adapter.WeatherAdapter
 import com.example.weatherpractice.api.RetrofitClient
 import com.example.weatherpractice.databinding.ActivityMainBinding
+import com.example.weatherpractice.model.IndianCities
 import com.example.weatherpractice.model.WeatherResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,34 +26,47 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupRecyclerView()
         getWeather()
     }
     private fun setupRecyclerView(){
-        adapter= WeatherAdapter(weatherList)
+        adapter= WeatherAdapter(weatherList, IndianCities.cities.map{it.name
+
+        })
         binding.recyclerView.layoutManager= LinearLayoutManager(this)
         binding.recyclerView.adapter=adapter
     }
     private fun getWeather(){
+        val latitude = IndianCities.cities.joinToString(","){it.latitude.toString()}
+        val longitude = IndianCities.cities.joinToString(","){it.longitude.toString()}
         RetrofitClient.api.getWeather(
-            latitude = 12.9716,
-            longitude = 77.5946).enqueue(object:Callback<WeatherResponse>{
+            latitude = latitude,
+            longitude = longitude).enqueue(object:Callback<List<WeatherResponse>>{
             override fun onResponse(
-                call: Call<WeatherResponse>,
-                response:Response<WeatherResponse>){
-                if(response.isSuccessful){
-                    response.body()?.let{weather->weatherList.add(weather)
-                        adapter.notifyDataSetChanged()}
+                call: Call<List<WeatherResponse>>,
+                response:Response<List<WeatherResponse>>) {
+                if (response.isSuccessful) {
+                    val weatherData = response.body()
+                    weatherData?.let { weather ->
+                        weatherList.clear()
+                        weatherList.addAll(weatherData)
+                        adapter.notifyDataSetChanged()
+                    }
+                } else {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "API Error: ${response.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
             override fun onFailure(
-                call:Call<WeatherResponse>,
+                call:Call<List<WeatherResponse>>,
                 t:Throwable
             ){
                 Toast.makeText(this@MainActivity, "API Error: ${t.message}", Toast.LENGTH_LONG).show()
             }
             }
         )
-    }
+}
 }

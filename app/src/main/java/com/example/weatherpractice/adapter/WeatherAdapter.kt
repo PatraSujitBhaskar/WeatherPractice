@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpractice.databinding.ItemWeatherBinding
 import com.example.weatherpractice.model.WeatherResponse
 
-class WeatherAdapter(private val weatherList: List<WeatherResponse>): RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
+class WeatherAdapter(private val weatherList: List<WeatherResponse>, private val cityNames: List<String>): RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
     class WeatherViewHolder(private val binding: ItemWeatherBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(weather: WeatherResponse){
-            binding.tvLocation.text="${weather.latitude}, ${weather.longitude}"
+        fun bind(weather: WeatherResponse, cityName:String){
+            binding.tvLocation.text=cityName
             binding.tvTemperature.text="${weather.current.temperature_2m}C"
             binding.tvHumidity.text="${weather.current.relative_humidity_2m}%"
             binding.tvWeatherCode.text="${weather.current.weather_code}"
@@ -22,7 +22,7 @@ class WeatherAdapter(private val weatherList: List<WeatherResponse>): RecyclerVi
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        holder.bind(weatherList[position])
+        holder.bind(weatherList[position], cityNames[position])
     }
     override fun getItemCount(): Int{
         return weatherList.size
