@@ -13,6 +13,7 @@ class WeatherAdapter(private val weatherList: List<WeatherResponse>, private val
             binding.tvTemperature.text="${weather.current.temperature_2m}C"
             binding.tvHumidity.text="${weather.current.relative_humidity_2m}%"
             binding.tvWeatherCode.text="${weather.current.weather_code}"
+            android.util.Log.d("WeatherAdapter","Humidity : ${weather.current.relative_humidity_2m}")
         }
     }
 

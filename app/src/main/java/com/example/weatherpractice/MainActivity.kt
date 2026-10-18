@@ -16,40 +16,34 @@ import com.example.weatherpractice.model.WeatherResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import  com.example.weatherpractice.adapter.WeatherPagingAdapter
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val weatherList=mutableListOf<WeatherResponse>()
-    private lateinit var adapter: WeatherAdapter
-    private var currentPage=0
-    private val pageSize = 10
-    private val displayedCityNames = mutableListOf<String>()
-    private var isLoading=false
+    private val repository = WeatherRepository()
+    private lateinit var adapter: WeatherPagingAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupRecyclerView()
-        getWeather()
     }
     private fun setupRecyclerView(){
-        adapter= WeatherAdapter(weatherList, displayedCityNames
-        )
+        adapter= WeatherPagingAdapter()
         binding.recyclerView.layoutManager= LinearLayoutManager(this)
         binding.recyclerView.adapter=adapter
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView,dx:Int,dy:Int){
-             super.onScrolled(recyclerView, dx, dy)
-             val layoutManager=recyclerView.layoutManager as LinearLayoutManager
-             val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-             if(!isLoading && lastVisibleItem >= weatherList.size-2 && weatherList.size<IndianCities.cities.size){
-                 loadNextPage()
-             }
-            }
-        })
+        lifecycleScope.launch{
+            repository.getWeather().collectLatest { pagingData ->
+                android.util.Log.d("MainActivity", "Paging data received")
+                adapter.submitData(pagingData) }
+        }
     }
-    private fun getWeather(){
+    /*private fun getWeather(){
         val latitude = IndianCities.cities.joinToString(","){it.latitude.toString()}
         val longitude = IndianCities.cities.joinToString(","){it.longitude.toString()}
         RetrofitClient.api.getWeather(
@@ -118,5 +112,5 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         })
-    }
+    }*/
 }
