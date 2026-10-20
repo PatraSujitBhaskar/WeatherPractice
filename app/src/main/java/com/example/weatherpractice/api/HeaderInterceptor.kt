@@ -11,7 +11,8 @@ class HeaderInterceptor : Interceptor{
         //Modify the request URL
         val modifiedUrl = originalRequest.url.newBuilder().setQueryParameter("current", "temperature_2m,relative_humidity_2m").build()
         //Add a custom header
-        val modifiedRequest = originalRequest.newBuilder().url(modifiedUrl).header("X-App-Name", "WeatherPractice").build()
+        val modifiedRequest = originalRequest.newBuilder().url(modifiedUrl).header("X-App-Name", "WeatherPractice")
+            .header("Accept-Language", "en-IN").header("Authorization", "Bearer demo_access_token").build()
 
         var attempt =0
         var maxAttempts=3
