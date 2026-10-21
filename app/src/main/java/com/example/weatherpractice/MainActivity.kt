@@ -21,6 +21,8 @@ import androidx.paging.LoadState
 import  com.example.weatherpractice.adapter.WeatherPagingAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.example.weatherpractice.api.TokenProvider
+import com.example.weatherpractice.api.PostRequestExample
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: WeatherPagingAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PostRequestExample.executeRequest()
+        TokenProvider.accessToken = "test_token_123"
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupRecyclerView()

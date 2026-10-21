@@ -53,4 +53,5 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("androidx.paging:paging-runtime-ktx:3.3.6")
     implementation(libs.okhttp.logging.interceptor)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 }
