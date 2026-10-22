@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -54,4 +55,9 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.3.6")
     implementation(libs.okhttp.logging.interceptor)
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.paging.runtime)
 }

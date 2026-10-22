@@ -7,16 +7,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpractice.model.IndianCities
 import com.example.weatherpractice.databinding.ItemWeatherBinding
-import com.example.weatherpractice.model.WeatherResponse
-class WeatherPagingAdapter : PagingDataAdapter<WeatherResponse, WeatherPagingAdapter.WeatherViewHolder>(
+import com.example.weatherpractice.database.WeatherEntity
+class WeatherPagingAdapter : PagingDataAdapter<WeatherEntity, WeatherPagingAdapter.WeatherViewHolder>(
     WeatherDiffCallback()
 ){
     inner class WeatherViewHolder(private val binding: ItemWeatherBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(weather: WeatherResponse,position:Int){
+        fun bind(weather: WeatherEntity,position:Int){
             binding.tvLocation.text= IndianCities.cities.getOrNull(position)?.name ?: "Unknown City"
-            binding.tvTemperature.text = "${weather.current.temperature_2m}C"
-            binding.tvHumidity.text = "${weather.current.relative_humidity_2m}"
-            binding.tvWeatherCode.text="${weather.current.weather_code}"
+            binding.tvTemperature.text = "${weather.temperature}C"
+            binding.tvHumidity.text = "${weather.humidity}"
+            binding.tvWeatherCode.text="${weather.weatherCode}"
         }
     }
 
@@ -29,20 +29,21 @@ class WeatherPagingAdapter : PagingDataAdapter<WeatherResponse, WeatherPagingAda
         holder: WeatherViewHolder,
         position: Int
     ) {
-        android.util.Log.d("WeatherPagingAdapter", "Binding position: $position")
+        android.util.Log.d("WeatherPagingAdapter", "Binding position: $position, itemCount: $itemCount")
+        android.util.Log.d("WeatherPagingAdapter", "LastVisible: $position")
         getItem(position)?.let{ weather -> holder.bind(weather, position)}
     }
-class WeatherDiffCallback: DiffUtil.ItemCallback<WeatherResponse>(){
+class WeatherDiffCallback: DiffUtil.ItemCallback<WeatherEntity>(){
     override fun areItemsTheSame(
-        oldItem: WeatherResponse,
-        newItem: WeatherResponse
+        oldItem: WeatherEntity,
+        newItem: WeatherEntity
     ): Boolean {
-        return oldItem.latitude == newItem.latitude && oldItem.longitude == newItem.longitude
+        return oldItem.locationKey == newItem.locationKey
     }
 
     override fun areContentsTheSame(
-        oldItem: WeatherResponse,
-        newItem: WeatherResponse
+        oldItem: WeatherEntity,
+        newItem: WeatherEntity
     ): Boolean {
         return oldItem==newItem
     }

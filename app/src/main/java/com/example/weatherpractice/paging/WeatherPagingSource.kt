@@ -2,10 +2,15 @@ package com.example.weatherpractice.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.weatherpractice.api.RetrofitClient
+import com.example.weatherpractice.database.WeatherDao
 import com.example.weatherpractice.model.IndianCities
 import com.example.weatherpractice.model.WeatherResponse
+import com.example.weatherpractice.database.toWeatherEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 
-class WeatherPagingSource : PagingSource<Int, WeatherResponse>(){
+class WeatherPagingSource(private val weatherDao: WeatherDao) : PagingSource<Int, WeatherResponse>(){
     override fun getRefreshKey(state: PagingState<Int, WeatherResponse>): Int? {
         return state.anchorPosition?.let { position ->
             state.closestPageToPosition(position)?.prevKey?.plus(1) ?: state.closestPageToPosition(
@@ -34,6 +39,10 @@ class WeatherPagingSource : PagingSource<Int, WeatherResponse>(){
             android.util.Log.d("WeatherPagingSource", "body: ${response.body()}")
             if(response.isSuccessful){
                 val weatherData = response.body().orEmpty()
+                //save the API results to Room
+                withContext(Dispatchers.IO){
+                    weatherDao.insertAll(weatherData.map { it.toWeatherEntity() })
+                }
                 android.util.Log.d("WeatherPagingSource", "Weather Items received: ${weatherData.size}")
                 LoadResult.Page(data=weatherData, prevKey=if(page==0) null else page-1, nextKey = if(endIndex<cities.size)page+1 else null)
             }else{

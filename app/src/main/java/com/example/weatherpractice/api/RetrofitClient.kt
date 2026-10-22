@@ -14,7 +14,6 @@ object RetrofitClient {
     }
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HeaderInterceptor())
-        .authenticator(TokenAuthenticator())
         .addInterceptor(loggingInterceptor).build()
     val api: WeatherAPI by lazy{
 

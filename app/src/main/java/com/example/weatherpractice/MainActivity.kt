@@ -1,6 +1,7 @@
 package com.example.weatherpractice
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -8,7 +9,6 @@ import androidx.core.view.WindowInsetsCompat
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weatherpractice.adapter.WeatherAdapter
 import com.example.weatherpractice.api.RetrofitClient
 import com.example.weatherpractice.databinding.ActivityMainBinding
 import com.example.weatherpractice.model.IndianCities
@@ -21,18 +21,16 @@ import androidx.paging.LoadState
 import  com.example.weatherpractice.adapter.WeatherPagingAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import com.example.weatherpractice.api.TokenProvider
-import com.example.weatherpractice.api.PostRequestExample
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val repository = WeatherRepository()
+    private val repository by lazy{
+        WeatherRepository(applicationContext)
+    }
     private lateinit var adapter: WeatherPagingAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PostRequestExample.executeRequest()
-        TokenProvider.accessToken = "test_token_123"
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupRecyclerView()
@@ -41,6 +39,19 @@ class MainActivity : AppCompatActivity() {
         adapter= WeatherPagingAdapter()
         binding.recyclerView.layoutManager= LinearLayoutManager(this)
         binding.recyclerView.adapter=adapter
+        binding.recyclerView.isNestedScrollingEnabled=false
+        binding.recyclerView.addOnScrollListener(
+            object : RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                    Log.d("PagingScroll", "lastVisible=$lastVisibleItem,"+"itemCount = ${adapter.itemCount}")
+                }
+            }
+        )
+        adapter.addLoadStateListener { loadStates ->
+            android.util.Log.d("PagingState","Refresh: ${loadStates.refresh}, Append: ${loadStates.append}")
+        }
         lifecycleScope.launch{
             repository.getWeather().collectLatest { pagingData ->
                 android.util.Log.d("MainActivity", "Paging data received")
