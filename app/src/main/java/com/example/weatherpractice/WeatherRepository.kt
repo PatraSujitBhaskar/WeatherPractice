@@ -9,13 +9,14 @@ import kotlinx.coroutines.flow.Flow
 import com.example.weatherpractice.database.WeatherDatabaseProvider
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
+import com.example.weatherpractice.database.WeatherDao
 import com.example.weatherpractice.database.WeatherEntity
 import com.example.weatherpractice.paging.WeatherRemoteMediator
+import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Inject
 
 
-class WeatherRepository(context: Context) {
-    private val database = WeatherDatabaseProvider.getDatabase(context)
-    private val weatherDao = database.weatherDao()
+class WeatherRepository @Inject constructor(private val weatherDao: WeatherDao) {
     @OptIn(ExperimentalPagingApi::class)
     fun getWeather(): Flow<PagingData<WeatherEntity>>{
         return Pager(config = PagingConfig(pageSize = 10, initialLoadSize = 10, prefetchDistance = 1, enablePlaceholders = false),

@@ -19,15 +19,16 @@ import retrofit2.Response
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import  com.example.weatherpractice.adapter.WeatherPagingAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val repository by lazy{
-        WeatherRepository(applicationContext)
-    }
+    @Inject
+    lateinit var repository: WeatherRepository
     private lateinit var adapter: WeatherPagingAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

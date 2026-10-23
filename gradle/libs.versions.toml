@@ -13,6 +13,7 @@ okhttp = "4.12.0"
 room="2.8.2"
 ksp = "2.1.0-1.0.29"
 paging = "3.3.6"
+hilt="2.56.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,9 +30,12 @@ androidx-room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "
 androidx-room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
 androidx-room-paging = {group = "androidx.room", name = "room-paging", version.ref = "room"}
 androidx-paging-runtime = {group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging"}
+hilt-android = {group = "com.google.dagger", name = "hilt-android", version.ref="hilt"}
+hilt-compiler = {group = "com.google.dagger", name = "hilt-compiler", version.ref="hilt"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}
+hilt = {id="com.google.dagger.hilt.android", version.ref="hilt"}
 

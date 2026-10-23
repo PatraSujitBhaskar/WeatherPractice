@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -60,4 +61,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.paging.runtime)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 }
