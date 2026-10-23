@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpractice.api.RetrofitClient
@@ -19,6 +20,7 @@ import retrofit2.Response
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import  com.example.weatherpractice.adapter.WeatherPagingAdapter
+import com.example.weatherpractice.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -26,9 +28,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val weatherViewModel: WeatherViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    @Inject
-    lateinit var repository: WeatherRepository
     private lateinit var adapter: WeatherPagingAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             android.util.Log.d("PagingState","Refresh: ${loadStates.refresh}, Append: ${loadStates.append}")
         }
         lifecycleScope.launch{
-            repository.getWeather().collectLatest { pagingData ->
+            weatherViewModel.weather.collectLatest { pagingData ->
                 android.util.Log.d("MainActivity", "Paging data received")
                 adapter.submitData(pagingData) }
         }
