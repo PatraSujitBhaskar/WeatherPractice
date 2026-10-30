@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.weatherpractice.WeatherRepository
+import com.example.weatherpractice.domain.repository.WeatherRepository
 import com.example.weatherpractice.database.WeatherEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
